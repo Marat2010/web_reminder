@@ -1,0 +1,50 @@
+version: "3.3"
+
+
+#volumes:
+#  db:
+#    driver: local
+#    driver_opts:
+#      type: "nfs"
+#      device: /var/reminder_web/db
+
+
+
+services:
+
+ app:
+    container_name: reminder-app
+    image: reminder-app:v1
+    ports:
+      - 8001:8000
+    volumes:
+      - type: bind
+        source: /root/web_reminder/db
+        target: /app/db
+
+ auth_bot:
+    container_name: reminder-auth-bot
+    image: reminder-auth-bot:v1
+    volumes:
+      - type: bind
+        source: /root/web_reminder/db
+        target: /auth_bot/db
+
+ repeater:
+    container_name: reminder-repeater
+    image: reminder-repeater:v1
+    volumes:
+      - type: bind
+        source: /root/web_reminder/db
+        target: /repeater/db
+
+
+ webhook:
+    container_name: reminder-webhook
+    image: reminder-webhook:v1
+    ports:
+      - 8081:8080
+    volumes:
+      - type: bind
+        source: /root/web_reminder/db
+        target: /webhook/db

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Профиль пользователя</title>
+</head>
+<body>
+    <h1>Профиль пользователя</h1>
+    <p>Здравствуйте, {{ user.username }}!</p>
+    <p>Имя: {{ user.first_name }}</p>
+    <p>Фамилия: {{ user.last_name }}</p>
+    <p>Язык: {{ user.language_code }}</p>
+
+    <form action="{{ url_for('logout') }}" method="post">
+        <input type="submit" value="Выход">
+    </form>
+</body>
+</html>

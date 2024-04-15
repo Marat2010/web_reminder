@@ -1,0 +1,306 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="table-container" style="margin: 20px;margin-top: 45px;">
+
+  <div id="deleteMessage">Удалено</div>
+  
+  <input id="remind-id" style="visibility: hidden;height: 0px;width: 0px;">
+  
+  <div id="confirmDeleteModal" style="position: fixed;z-index: 0;visibility: hidden;">
+    <div class="modal-content" style="width: max-content;">
+      <div class="modal-header" style="width: 100%;">
+          <h5 class="modal-title" id="confirmDeleteModalLabel">Подтверждение удаления</h5>
+          <button type="button" class="close" onclick="closeModal('confirmDeleteModal')">
+            <span aria-hidden="true" onclick="$('#confirmDeleteModal').css('z-index', 0).css('visibility', 'hidden');">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>Вы уверены, что хотите удалить это напоминание?</p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 15px;" onclick="$('#confirmDeleteModal').css('z-index', 0).css('visibility', 'hidden');">Отмена</button>
+          <button type="button" class="btn btn-danger" id="deleteConfirmation">Удалить</button>
+        </div>
+      </div>
+    </div>
+
+
+      {% if context.reminds  %}
+
+      <table class="reminder-table">
+            <thead>
+              <tr>
+                <th>Формулировка</th>
+                <th onclick="showTypes()" style="position:reletive;cursor:pointer;">
+                  Тип напоминания
+                  <div id="types-list" style="position:absolute;top: 65px;z-index:100;visibility:hidden;">
+                    <button type="button" class="close" onclick="closeModal('types-list')" style="position: absolute;top: 0px;right: 0;"><span aria-hidden="true">&times;</span></button>
+                    <button class="type-item flex" data-type="type1">type1</button>
+                    <button class="type-item flex" data-type="type2">type2</button>
+                  <button class="type-item flex" data-type="type3">type3</button>
+                  </div>
+                </th>
+                <th onclick="sortTable(3)" style="cursor: pointer;">Ближайшее срабатывание</th>
+                <th></th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody>
+
+
+            {% for remind in context.reminds | reverse %}
+
+            <tr id="remind-{{ remind.ruid }}">
+              <td class="formulation-cell" onclick="formulModal({{ remind.ruid }})" id="formul-{{ remind.ruid }}">{{ remind.task | truncate(50) }}</td>
+              <td data-type="{{ remind.reminder_type }}" onclick="editModal({{ remind.ruid }})">{{ remind.type }}</td>
+              <td onclick="editModal({{ remind.ruid }})">{{ remind.nearest_trigger }}</td>
+              <td class="buttons-td">
+                <a href="/remind_edit/{{ remind.ruid }}/1">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" style="padding: 10px;"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"/></svg>
+                </a>
+              </td>
+              <td class="buttons-td">
+                <svg onclick="openDeleteConfirmationModal({{ remind.ruid }})" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" style="padding: 10px;"><!--!Font Awesome Free 6.5.1 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free Copyright 2024 Fonticons, Inc.--><path d="M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z"/></svg>
+              </td>
+            </tr>
+
+            {% endfor %}
+
+        </tbody>
+      </table>
+      
+      {% else %}
+      
+      <div class="non-cont flex" style="margin-top: 30px;">
+        <h5 class="non-message flex" style="margin-bottom: 10px;">Напоминаний пока нет</h5>
+        <a class="button non-message flex" href="/remind_add/1">Добавить</a>
+      </div>
+
+      {% endif %}
+</div>
+
+<!-- Модальное окно подтверждения удаления -->
+<div id="confirmDeleteModal" style="z-index: -1;visibility: hidden;position: absolute;top: 100px;left: 400px;background-color: white;border: 1px solid lightgray;padding: 20px;">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="confirmDeleteModalLabel">Подтверждение удаления</h5>
+        <button type="button" class="close" onclick="closeModal('confirmDeleteModal')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Вы уверены, что хотите удалить это напоминание?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="margin-right: 15px;">Отмена</button>
+        <button type="button" class="btn btn-danger" id="deleteConfirmation">Удалить</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Модальное окно формулировки -->
+<div id="confirmFormulsModal" style="z-index: -1;visibility: hidden;position: absolute;top: 100px;left: 400px;background-color: white;border: 1px solid lightgray;padding: 20px;">
+      <button type="button" class="close" onclick="closeModal('confirmFormulsModal')"></button>
+      <div class="modal-dialog" role="document">
+        <p class="modal-content-formul"></p>
+      </div>
+      <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title" class="modal-content-formul"></h5>
+              </div>
+            </div>
+      </div>
+</div>
+
+<script>
+
+    var screenWidth = window.innerWidth;
+
+    if (screenWidth >= 320 && screenWidth <= 560) {
+        window.location.href = '/reminds/2';
+    }
+
+    function openDeleteConfirmationModal(ruid) {
+        // Открыть модальное окно для подтверждения удаления
+        $('#confirmDeleteModal').css('z-index', 10).css('visibility', 'visible');
+
+        document.querySelector('#remind-id').value = ruid
+    }
+  
+    $('#deleteConfirmation').on('click', function() {
+        // Проверка данных
+        var ruid = document.querySelector('#remind-id').value
+
+        var data = {
+           id: ruid
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/remind_delete",
+            data: JSON.stringify(data),
+            contentType: "application/json"
+        });
+
+        remindElement = document.querySelector(`#remind-${ruid}`)
+        remindElement.classList.add('disabled');
+        
+        // Установить таймер для удаления элемента и отображения сообщения об удалении
+        setTimeout(function() {
+            remindElement.remove();
+            document.getElementById('deleteMessage').style.display = 'block';
+            setTimeout(function() {
+                document.getElementById('deleteMessage').style.display = 'none';
+            }, 1700);
+
+            var elements = document.querySelectorAll('[id^="remind-"]');
+            if (elements.length == 1){
+              window.location.reload();
+            }
+        }, 1000);
+            
+        // Закрыть модальное окно
+        $('#confirmDeleteModal').css('z-index', 0).css('visibility', 'hidden');
+    });
+
+    // При нажатии кнопки "Отмена"
+    $('.btn-secondary').on('click', function() {
+        // Закрыть модальное окно
+        $('#confirmDeleteModal').css('z-index', 0).css('visibility', 'hidden');
+    });
+
+    //   document.addEventListener('DOMContentLoaded', function () {
+    //         // Add click event listeners to type buttons
+    //         var typeButtons = document.querySelectorAll('.type-item');
+    //         typeButtons.forEach(function (button) {
+    //               button.addEventListener('click', function () {
+    //                     var reminderType = button.getAttribute('data-type');
+    //                     sortTableByReminderType(reminderType);
+    //               });
+    //         });
+
+    //         // Event listener for sorting by column
+    //         var sortColumnButtons = document.querySelectorAll('.sortable-column');
+    //         sortColumnButtons.forEach(function (button, index) {
+    //               button.addEventListener('click', function () {
+    //                     sortTable(index);
+    //               });
+    //         });
+    //   });
+
+    //   function sortTableByReminderType(reminderType) {
+    //         var table = document.querySelector('.reminder-table');
+    //         var rows = Array.from(table.rows).slice(1); // Skip the header row
+    //         rows.sort(function (a, b) {
+    //               var x = a.querySelector('.reminder-type-cell').getAttribute('data-type');
+    //               var y = b.querySelector('.reminder-type-cell').getAttribute('data-type');
+    //               return x.localeCompare(y);
+    //         });
+
+    //         // Re-append the sorted rows to the table
+    //         rows.forEach(function (row) {
+    //               table.appendChild(row);
+    //         });
+    //   }
+
+    //   function sortTable(column) {
+    //         var table = document.querySelector('.reminder-table');
+    //         var rows = Array.from(table.rows).slice(1); // Skip the header row
+    //         rows.sort(function (a, b) {
+    //               var x = a.getElementsByTagName('td')[column].innerText;
+    //               var y = b.getElementsByTagName('td')[column].innerText;
+    //               return x.localeCompare(y);
+    //         });
+
+    //         // Re-append the sorted rows to the table
+    //         rows.forEach(function (row) {
+    //               table.appendChild(row);
+    //         });
+    //   }
+
+    //   function sortTable(column) {
+    //         var table, rows, switching, i, x, y, shouldSwitch;
+    //         table = document.querySelector('.reminder-table');
+    //         switching = true;
+
+    //         while (switching) {
+    //               switching = false;
+    //               rows = table.rows;
+
+    //               for (i = 1; i < (rows.length - 1); i++) {
+    //                     shouldSwitch = false;
+    //                     x = rows[i].getElementsByTagName('td')[column].innerText;
+    //                     y = rows[i + 1].getElementsByTagName('td')[column].innerText;
+
+    //                     if (x > y) {
+    //                           shouldSwitch = true;
+    //                           break;
+    //                     }
+    //               }
+
+    //               if (shouldSwitch) {
+    //                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+    //                     switching = true;
+    //               }
+    //         }
+    //   }
+
+    //   $(document).ready(function() {
+    //         $('.formulation-cell').hover(function() {
+    //               var fullFormulation = $(this).text();
+    //               $('#fullFormulation').text(fullFormulation);
+    //               $('#formulationModal').modal('show');
+    //         }, function() {
+    //               $('#formulationModal').modal('hide');
+    //         });
+    //   });
+
+    //   function sortTable(column) {
+    //         var table, rows, switching, i, x, y, shouldSwitch;
+    //         table = document.querySelector('.reminder-table');
+    //         switching = true;
+
+    //         while (switching) {
+    //               switching = false;
+    //               rows = table.rows;
+
+    //               for (i = 1; i < (rows.length - 1); i++) {
+    //                     shouldSwitch = false;
+    //                     x = rows[i].getElementsByTagName('td')[column].innerText;
+    //                     y = rows[i + 1].getElementsByTagName('td')[column].innerText;
+
+    //                     if (x > y) {
+    //                           shouldSwitch = true;
+    //                           break;
+    //                     }
+    //               }
+
+    //               if (shouldSwitch) {
+    //                     rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+    //                     switching = true;
+    //               }
+    //         }
+    //   }
+
+    //   document.addEventListener('DOMContentLoaded', function() {
+    //   $('.reminder-type-cell').on('click', function() {
+    //         var reminderType = $(this).attr('data-type');
+    //         sortTableByReminderType(reminderType);
+    //   });
+
+    //   $('.formulation-cell').hover(function() {
+    //         var fullFormulation = $(this).text();
+    //         $('#fullFormulation').text(fullFormulation);
+    //         $('#formulationModal').modal('show');
+    //   }, function() {
+    //               $('#formulationModal').modal('hide');
+    //         });
+    //   });
+</script>
+
+{% endblock %}

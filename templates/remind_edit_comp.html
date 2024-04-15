@@ -1,0 +1,576 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style>
+
+            .flex{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+            }
+
+            body{
+                  margin: 0;
+            }
+
+            main{
+                  height: 1000px;
+                  display: flex;
+                  flex-wrap: wrap;
+                  justify-content: center;
+                  align-content: start;
+            }
+
+            nav {
+                  width: 100%;
+                  display: flex;
+                  justify-content: center;
+                  background-color: #333;
+                  color: #fff;
+                  text-align: center;
+                  padding: 20px;
+                  height: max-content;
+                  margin-bottom: 30px;
+            }
+
+            nav a {
+                  text-decoration: none;
+                  color: #fff;
+                  font-weight: bold;
+                  font-size: 16px;
+                  display: block;
+                  padding: 10px;
+                  transition: background-color 0.3s ease;
+                  text-decoration: none;
+                  width: 120px;
+                  letter-spacing: 1px;
+            }
+
+            nav a:hover {
+                  background-color: #555;
+                  color: white;
+                  text-decoration: none;
+            }
+
+            .dropdown {
+                  position: relative;
+                  display: inline-block;
+            }
+
+            .dropdown-content {
+                  display: none;
+                  position: absolute;
+                  background-color: #333;
+                  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                  z-index: 1;
+            }
+
+            .dropdown:hover .dropdown-content {
+                  display: block;
+            }
+
+            .dropdown-content a {
+                  color: #fff;
+                  padding: 12px 16px;
+                  display: block;
+                  text-decoration: none;
+                  transition: background-color 0.3s ease;
+            }
+
+            .dropdown-content a:hover {
+                  background-color: #555;
+            }
+
+            .reminder{
+                  display: flex;
+                  flex-wrap: wrap;
+                  justify-content: center;
+                  padding: 20px;
+                  width: 100%;
+                  max-width: 1400px;
+                  margin-left: 60px;
+            }
+
+            textarea{
+                  padding: 5px;
+            }
+
+            .reminder-col{
+                  margin: 10px 30px;
+                  margin-bottom: 45px;
+            }
+
+            .reminder-col p{
+                  margin-bottom: 30px;
+            }
+
+            .input-col{
+                  margin: 10px 0px;
+            }
+
+
+            #calendar {
+                  width: 300px;
+                  text-align: center;
+                  background-color: #fff;
+            }
+
+            select {
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            table {
+                  width: 100%;
+                  border-collapse: collapse;
+            }
+
+            th, td {
+                  padding: 10px;
+                  border: 1px solid #ddd;
+            }
+
+            th {
+                  background-color: #f2f2f2;
+            }
+
+            td {
+                  cursor: pointer;
+            }
+
+            td:hover {
+                  background-color: #f0f0f0;
+            }
+
+            .selected-cell{
+                  background-color: #e0e0e0;
+            }
+
+            .modal {
+                  display: none;
+                  position: fixed;
+                  z-index: 1000;
+                  left: 0;
+                  top: 0;
+                  width: 100%;
+                  height: 100%;
+                  background-color: rgba(0, 0, 0, 0.5);
+            }
+
+            .modal-content {
+                  background-color: #fefefe;
+                  margin: 15% auto;
+                  padding: 20px;
+                  border: 1px solid #888;
+                  width: 300px;;
+                  text-align: center;
+                  position: relative;
+                  display: block;
+            }
+
+            .modal-content *{
+                  width: max-content;
+                  margin: 0;
+            }
+
+            #timePicker {
+                  /* width: 300px;
+                  text-align: center;
+                  background-color: #fff;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  border-radius: 8px;
+                  margin-bottom: 20px; */
+            }
+
+            input[type="time"] {
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            #selectedTimeTextarea {
+                  width: 100%;
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            .buttons{
+                  width: 450px;
+                  height: 50px;
+                  display: flex;
+                  justify-content: space-between;
+            }
+
+            .close {
+                  color: #aaa;
+                  float: right;
+                  font-size: 28px;
+                  font-weight: bold;
+            }
+
+            .close:hover,
+            .close:focus {
+                  color: black;
+                  text-decoration: none;
+                  cursor: pointer;
+            }
+
+            .wave-animation {
+                  position: relative;
+                  overflow: hidden;
+            }
+
+            .wave-animation::after {
+                  content: "";
+                  position: absolute;
+                  top: 50%;
+                  left: 50%;
+                  width: 150%;
+                  height: 150%;
+                  background-color: rgba(255, 255, 255, 0.2);
+                  border-radius: 50%;
+                  transform: translate(-50%, -50%);
+                  animation: wave 3s linear infinite;
+                  z-index: 0;
+            }
+
+            @keyframes wave {
+                  from {
+                        width: 150%;
+                        height: 150%;
+                        opacity: 0.4;
+                  }
+                  to {
+                        width: 400%;
+                        height: 400%;
+                        opacity: 0;
+                  }
+            }
+
+      </style>
+
+      <body>
+
+            <main>
+                  <div class="modal" id="successModal" onclick="closeModal()">
+                        <div class="modal-content">
+                              <span class="close" onclick="closeModal()" style="position: relative;bottom: 5px;">&times;</span>
+                              <p>Напоминание обновлено</p>
+                        </div>
+                  </div>
+
+                  <div class="reminder" onsubmit="EditSubmit(event)">
+                        <div class="reminder-info flex" style="align-items: start;align-content: start;justify-content: start;flex-wrap: wrap;max-width: 570px;">
+                              <div style="max-width: 570px;">
+                                    <p>О чём напомнить</p>
+                                    <textarea rows="5" cols="70" onkeydown="textAreaHeight(this)" name="text" style="max-width: 570px;height: 80px;" id="text">{{ context.remind.task }}</textarea>
+                              </div>
+                              
+                              <div style="width: 100%;display: flex;justify-content: space-between;">
+                                    <div class="reminder-col" style="margin: 20px 0px;">
+                                          <p>С какой регулярностью напоминать</p>
+                                          <select id="remind-type" class="form-select" aria-label="Пример выбора по умолчанию" name="type">
+                                                <option type="radio" id="single" name="type" value="single">Разовое напоминание</option>
+                                                <option type="radio" id="dayly" name="type" value="dayly">Каждый день</option>
+                                                <option type="radio" id="weekly" name="type" value="weekly">Каждую неделю</option>
+                                                <option type="radio" id="monthly" name="type" value="monthly">Каждый месяц</option>
+                                                <option type="radio" id="yearly" name="type" value="yearly">Каждый год</option>
+                                          </select>
+                                    </div>
+                              </div>
+                              
+                              <div class="buttons">
+                                    <button type="submit" class="submit-btn" onclick="SubmitRemindEdit('/remind_edit/{{ context.remind.ruid }}/1')">Обновить напоминание</button>
+                              </div>
+                        </div>
+      
+                        <div class="reminder-col" style="margin-top: 0;">
+                              <p>Когда напоминать в первый раз</p>
+                              <div id="calendar" style="padding: 20px;padding-top: 1px;"></div>
+                              <input type="hidden" name="date" id="selectedDate">
+                        </div>
+                  </div>
+            </main>
+
+      </body>
+
+      <script>
+
+      var screenWidth = window.innerWidth;
+
+      if (screenWidth >= 320 && screenWidth <= 560) {
+            window.location.href = '/remind_edit/{{ context.remind.ruid }}/2';
+      }
+
+      window.onload = function() {
+          // Получаем значение типа напоминания из контекста
+          var remindType = "{{ context.remind.remind_type }}";
+
+          // Находим select по его id
+          var remindTypeSelect = document.getElementById('remind-type');
+
+          // Проходимся по опциям внутри select и устанавливаем атрибут selected у соответствующей опции
+          for (var i = 0; i < remindTypeSelect.options.length; i++) {
+              if (remindTypeSelect.options[i].value === remindType) {
+                  remindTypeSelect.options[i].setAttribute('selected', 'selected');
+                  break;
+              }
+          }
+      };
+
+          setTimeout(function() {
+                // Получаем время в формате UNIX из контекста
+                var nearestTriggerUnix = {{ context.remind.nearest_trigger }};
+
+                // Создаем новый объект Date, используя время в формате UNIX (в миллисекундах)
+                var nearestTriggerDate = new Date(nearestTriggerUnix * 1000);
+
+                // Получаем часы и минуты из объекта Date
+                var hours = nearestTriggerDate.getHours();
+                var minutes = nearestTriggerDate.getMinutes();
+
+                // Получаем день, месяц и год из объекта Date
+                var day = nearestTriggerDate.getDate();
+                var month = nearestTriggerDate.getMonth() + 1;
+                var year = nearestTriggerDate.getFullYear();
+
+
+                // Находим select по его id
+                var monthSelect = document.getElementById('month');
+
+                // Проходимся по опциям внутри select и устанавливаем атрибут selected у соответствующей опции
+                for (var i = 0; i < monthSelect.options.length; i++) {
+                    if (monthSelect.options[i].value == month) {
+                        monthSelect.options[i].setAttribute('selected', 'selected');
+                        break;
+                    }
+                }
+
+                // Находим select по его id
+                var yearSelect = document.getElementById('year');
+
+                // Проходимся по опциям внутри select и устанавливаем атрибут selected у соответствующей опции
+                for (var i = 0; i < yearSelect.options.length; i++) {
+                    if (yearSelect.options[i].value == year) {
+                        yearSelect.options[i].setAttribute('selected', 'selected');
+                        break;
+                    }
+                }
+
+                createCalendar(parseInt(year), parseInt(month));
+
+
+                var dateString = (day < 10 ? '0' + day : day) + '.' + (month < 10 ? '0' + month : month) + '.' + year;
+                var timeString = (hours < 10 ? '0' + hours : hours) + ':' + (minutes < 10 ? '0' + minutes : minutes);
+
+                document.getElementById('selectedTime').value = timeString;
+                document.getElementById('selectedDate').value = dateString;
+
+                // Составляем строку с датой в формате "дд.мм.гггг"
+                var formattedDay = day < 10 ? day : ('0' + day);
+                var formattedMonth = month < 10 ? month : ('0' + month);
+                dateString = formattedDay + '.' + formattedMonth + '.' + year;
+
+                // Получаем все ячейки дат в календаре
+                var cells = document.querySelectorAll('#calendar td');
+
+                // Проходимся по каждой ячейке и сравниваем ее дату с датой из переменной nearestTriggerDate
+                cells.forEach(function(cell) {
+                    var cellDate = cell.getAttribute('data-date');
+                    if (cellDate == dateString) {
+                        cell.classList.add('selected-cell');
+                    }
+                });
+
+          }, 1000);
+
+          function shake(){
+                  // Задрожать кнопку
+                  $('.submit-btn').addClass('shake');
+                  setTimeout(function () {
+                        $('.submit-btn').removeClass('shake');
+                  }, 3000);
+          }
+
+            function CheckValidData(date, time, text){
+                  // Сброс всех стилей до исходных значений
+                  $('#calendar').css('border', 'none');
+                  $('#selectedTime').css('border', 'none');
+                  $('#text').css('border', '1px solid black');
+                  $('.submit-btn').text('Обновить напоминание').css('background-color', '#4e4e4e').removeClass('shake');
+
+                  if (date === '') {
+                        // Подсветка календаря красным
+                        $('#calendar').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте дату"
+                        $('.submit-btn').text('Добавьте дату').css('background-color', '#ff4343');
+                        // Задрожать кнопку
+                        shake()
+                        return 0;
+                  }
+
+                  if (time === '') {
+                        // Подсветка поля времени красным
+                        $('#selectedTime').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте время"
+                        $('.submit-btn').text('Добавьте время').css('background-color', '#ff4343');
+                        // Задрожать кнопку
+                        shake()
+                        return 0;
+                  }
+
+                  if (text === '') {
+                        // Подсветка поля ввода текста красным
+                        $('#text').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте текст"
+                        $('.submit-btn').text('Добавьте текст').css('background-color', '#ff4343');
+                        return 0;
+                  }
+
+                  else{
+                        return 1
+                  }
+            }
+
+            window.onload = function() {
+                  var select = document.querySelector('#remind-type');
+                  var remind_type = '{{ context.remind.type }}'
+
+                  for (var i = 0; i < select.options.length; i++) {
+                        if (select.options[i].value === remind_type) {
+                              select.options[i].setAttribute('selected', 'selected');
+                              break; // Если найдено совпадение, завершаем цикл
+                        }
+                  }
+            };
+
+            function SubmitRemindEdit(){
+                  let date = $('#selectedDate').val()
+                  let time = $('#selectedTime').val()
+                  let text = $('#text').val()
+
+                  // проверка данных
+                  if (CheckValidData(date, time, text)){
+                        // Преобразуем дату и время в UNIX-время
+                        var dateParts = date.split('.');
+                        var timeParts = time.split(':');
+                        var nearest_trigger = Date.UTC(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]) / 1000;
+
+                        data = {
+                              task: text,
+                              remind_type: $('#remind-type').val(),
+                              nearest_trigger: nearest_trigger,
+                              creator: Number('{{ context.telegram_id }}'),
+                              ruid: {{ context.remind.ruid }}
+                        }
+
+                        $.ajax({
+                              type: "POST",
+                              url: "/remind_edit/{{ context.remind.ruid }}",
+                              data: JSON.stringify(data),
+                              contentType: "application/json",
+                              success: function(response) {
+                                    openModal()
+                              }
+                        });
+                  }
+            }
+
+            function textAreaHeight(textarea) {
+                  if (!textarea._tester) {
+                        var ta = textarea.cloneNode();
+                        ta.style.position = 'absolute';
+                        ta.style.zIndex = -2000000;
+                        ta.style.visibility = 'hidden';
+                        ta.style.height = '1px';
+                        ta.id = '';
+                        ta.name = '';
+                        textarea.parentNode.appendChild(ta);
+                        textarea._tester = ta;
+                        textarea._offset = ta.clientHeight - 1;
+                  }
+                  if (textarea._timer) clearTimeout(textarea._timer);
+                  textarea._timer = setTimeout(function () {
+                        textarea._tester.style.width = textarea.clientWidth + 'px';
+                        textarea._tester.value = textarea.value;
+                        textarea.style.height = Math.max((textarea._tester.scrollHeight - textarea._offset), textarea.getAttribute('rows') * 16) + 'px';
+                        textarea._timer = false;
+                  }, 1);
+            }
+
+            function createSelect(id, start, end, selected, onchangeFunction) {
+                  var select = document.createElement("select");
+                  select.id = id;
+                  select.onchange = window[onchangeFunction];
+
+                  for (var i = start; i <= end; i++) {
+                        var option = document.createElement("option");
+                        option.value = i;
+                        option.text = i;
+                        if (i === selected) {
+                        option.selected = true;
+                        }
+                        select.appendChild(option);
+                  }
+
+                  return select;
+            }
+
+            // Инициализация при загрузке страницы
+            var currentYear = new Date().getFullYear();
+            var currentMonth = new Date().getMonth() + 1;
+
+            createCalendar(currentYear, currentMonth);
+
+            // Открытие модального окна
+            function openModal() {
+                  var modal = document.getElementById("successModal");
+                  modal.style.display = "block";
+            }
+
+            // Закрытие модального окна
+            function closeModal() {
+                  var modal = document.getElementById("successModal");
+                  modal.style.display = "none";
+            }
+
+            function SubmitRemindEdit(url) {
+                let date = $('#selectedDate').val();
+                let time = $('#selectedTime').val();
+                let text = $('#text').val();
+
+                // проверка данных
+                if (CheckValidData(date, time, text)) {
+                    // Преобразуем дату и время в UNIX-время
+                    var dateParts = date.split('.');
+                    var timeParts = time.split(':');
+                    var nearest_trigger = Date.UTC(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]) / 1000;
+
+                    data = {
+                        ruid: '{{ context.remind.ruid }}',
+                        task: text,
+                        remind_type: $('#remind-type').val(),
+                        nearest_trigger: nearest_trigger,
+                        creator: Number('{{ context.telegram_id }}'),
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: url,
+                        data: JSON.stringify(data),
+                        contentType: "application/json",
+                        success: function(response) {
+                            openModal();
+                        }
+                    });
+                }
+            }
+
+      </script>
+
+</html>
+
+{% endblock %}

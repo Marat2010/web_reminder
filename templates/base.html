@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru">
+      <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <link rel="stylesheet" href="/style.css">
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+            <title>Заголовок страницы</title>
+            <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css">
+            <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+            <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"></script>
+            <script src="https://kit.fontawesome.com/7a9e6c1b6e.js" crossorigin="anonymous"></script>
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+      </head>
+
+      <style>
+
+            @import url('https://fonts.googleapis.com/css?family=Montserrat:100,300,400,700');
+
+            *{
+                  font-family: 'Montserrat' !important;
+            }
+
+            p, button, select{
+                  font-size: 15px !important;
+            }
+
+            th {
+                  font-size: 14px;
+            }
+
+            td{
+                  font-size: 15px;
+            }
+
+            table *{
+                  transition: .1s;
+            }
+
+            #text{
+                  border: 1px solid lightgray;
+                  outline: none;
+                  padding: 10px !important;
+            }
+
+            .submit-btn:hover{
+                  background: #606060;
+            }
+
+            #selectedTime, #month, #year{
+                  border: 1px solid lightgray;
+                  padding: 10px 12px;
+            }
+
+            #text, button{
+                  transition: .3s;
+            }
+
+            #text:hover{
+                  box-shadow: 0 0 16px rgb(226 226 226 / 50%);
+            }
+
+            button{
+
+            }
+
+            body{
+                  overflow-x: hidden;
+            }
+
+            a:hover, a, a:active{
+                  color: white;
+                  text-decoration: none;
+            }
+
+            #types-list{
+                  background-color: #fafafa;
+                  border: 1px solid lightgray;
+            }
+
+            .type-item{
+                  margin: 10px 15px;
+                  background-color: rgb(235, 235, 235);
+                  color: #272727;
+                  width: 200px;
+            }
+
+            .form-group{
+                  margin: 10px 15px;
+            }
+
+            .reminder-list{
+                  width: 100%;
+                  padding: 20px;
+                  flex-wrap: wrap;
+                  max-width: 500px;
+                  align-items: start !important;
+                  align-content: start;
+            }
+
+            .reminder-list div{
+                  margin: 10px 20px;
+                  background-color: lightgray;
+            }
+
+            .flex{
+                  display: flex;
+                  justify-content: center;
+                  align-items: center;
+            }
+
+            header{
+                  width: 100%;
+                  height: 75px;
+                  background-color: #272727;
+                  padding: 20px;
+                  color: white;
+                  font-weight: 600;
+                  font-size: 20px;
+            }
+
+            body{
+                  margin: 0;
+            }
+
+            main{
+                  height: 1200px;
+                  flex-wrap: nowrap;
+            }
+
+            .right-menu{
+                  width: 20%;
+                  height: 100%;
+            }
+
+            nav {
+                  background-color: #333;
+                  color: #fff;
+                  text-align: center;
+                  padding: 20px;
+                  width: 100%;
+                  height: 100%;
+            }
+
+            nav ul {
+                  list-style: none;
+                  padding: 0;
+                  margin: 0;
+            }
+
+            nav li {
+                  display: inline-block;
+                  margin-right: 20px;
+            }
+
+            nav a {
+                  text-decoration: none;
+                  color: #fff;
+                  font-weight: bold;
+                  font-size: 14px !important;
+                  display: block;
+                  padding: 10px;
+                  transition: background-color 0.3s ease;
+            }
+
+            nav a:hover {
+                  background-color: #555;
+            }
+
+            .dropdown {
+                  position: relative;
+                  display: inline-block;
+            }
+
+            .dropdown-content {
+                  display: none;
+                  position: absolute;
+                  background-color: #333;
+                  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                  z-index: 1;
+            }
+
+            .dropdown:hover .dropdown-content {
+                  display: block;
+            }
+
+            .dropdown-content a {
+                  color: #fff;
+                  padding: 12px 16px;
+                  display: block;
+                  text-decoration: none;
+                  transition: background-color 0.3s ease;
+            }
+
+            .dropdown-content a:hover {
+            background-color: #555;
+            }
+
+            .reminder{
+                  padding: 20px;
+                  width: 80%;
+                  margin-left: 60px;
+            }
+
+            textarea{
+                  padding: 5px;
+            }
+
+            .reminder-col{
+                  margin: 10px 30px;
+                  margin-bottom: 45px;
+            }
+
+            .reminder-col p{
+                  margin-bottom: 30px;
+            }
+
+            .input-col{
+                  margin: 10px 0px;
+            }
+
+
+            #calendar {
+                  width: max-content !important;
+                  text-align: center;
+                  background-color: #fff;
+                  border: 1px solid lightgray;
+            }
+
+            select {
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            table {
+                  width: max-content;;
+                  border-collapse: collapse;
+            }
+
+            th, td {
+                  padding: 10px;
+                  border: 1px solid #ddd;
+            }
+
+            th {
+                  background-color: #f2f2f2;
+            }
+
+            td {
+                  cursor: pointer;
+            }
+
+            td:hover {
+                  background-color: #f0f0f0;
+            }
+
+            .selected-cell{
+                  background-color: #e0e0e0;
+            }
+
+            #timePicker {
+                  width: 300px;
+                  text-align: center;
+                  background-color: #fff;
+                  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+                  border-radius: 8px;
+                  margin-bottom: 20px;
+            }
+
+            input[type="time"] {
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            #selectedTimeTextarea {
+                  width: 100%;
+                  padding: 10px;
+                  font-size: 16px;
+                  margin: 10px;
+            }
+
+            .buttons{
+                  width: 450px;
+                  height: 50px;
+                  display: flex;
+                  justify-content: space-between;
+            }
+
+            .buttons button{
+                  width: 45%;
+                  height: 100%;
+            }
+
+            /* Стили для шапки */
+            header {
+                  width: 100%;
+                  height: 75px;
+                  background-color: #272727;
+                  padding: 20px;
+                  color: white;
+                  font-weight: 600;
+                  font-size: 20px;
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+            }
+
+            nav {
+                  display: flex;
+                  justify-content: center;
+                  background-color: #333;
+                  color: #fff;
+                  text-align: center;
+                  padding: 20px;
+                  width: auto;
+                  height: max-content;
+            }
+
+            nav a {
+                  text-decoration: none;
+                  color: #fff;
+                  font-weight: bold;
+                  font-size: 16px;
+                  display: block;
+                  padding: 10px;
+                  transition: background-color 0.3s ease;
+                  text-decoration: none;
+                  width: 120px;
+                  letter-spacing: 1px;
+            }
+
+            nav a:hover {
+                  background-color: #555;
+                  color: white;
+                  text-decoration: none;
+            }
+
+            .dropdown {
+                  position: relative;
+                  display: inline-block;
+            }
+
+            .dropdown-content {
+                  display: none;
+                  position: absolute;
+                  background-color: #333;
+                  box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+                  z-index: 1;
+            }
+
+            .dropdown:hover .dropdown-content {
+                  display: block;
+            }
+
+            .dropdown-content a {
+                  color: #fff;
+                  padding: 12px 16px;
+                  display: block;
+                  text-decoration: none;
+                  transition: background-color 0.3s ease;
+            }
+
+            .dropdown-content a:hover {
+                  background-color: #555;
+            }
+
+            .buttons button, .button{
+                  width: max-content;
+                  height: 100%;
+                  background: #4d4d4d;
+                  border-radius: 9px;
+                  color: white;
+                  border: none;
+            }
+
+            .submit-btn{
+                  padding: 10px;
+                  background: #4e4e4e;
+                  border: none;
+                  border-radius: 7px;
+                  color: white;
+                  font-size: 16px;
+            }
+
+              .non-cont{
+                flex-wrap: wrap;
+                width: max-content;
+              }
+
+              .non-message{
+                padding: 10px;
+                width: 100%;
+                height: max-content;
+              }
+
+              .table-container{
+                display: flex;
+                justify-content: center;
+              }
+
+              .buttons-td{
+                width: 39px;
+                padding: 0px !important;
+              }
+
+              #deleteMessage {
+                position: fixed;
+                top: 25%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background-color: #f8d7da;
+                border-color: #f5c6cb;
+                color: #721c24;
+                padding: .75rem 1.25rem;
+                border: 1px solid transparent;
+                border-radius: .25rem;
+                z-index: 1000;
+                display: none;
+              }
+
+              .disabled {
+                pointer-events: none;
+                opacity: 0.5;
+              }
+
+      </style>
+        
+
+      <body>
+            <main>
+                  <nav>
+                        <a href="/remind_add/1">Создать</a>
+                        <a href="/reminds/1">Мои</a>
+                        <a href="/settings/1">Настройки</a>
+                  </nav>
+            
+                  {% block content %}
+
+                  {% endblock %}
+            </main>
+      </body>
+
+      <script>
+
+            function shake(){
+                  // Задрожать кнопку
+                  $('.submit-btn').addClass('shake');
+                  setTimeout(function () {
+                        $('.submit-btn').removeClass('shake');
+                  }, 3000);
+            }
+
+            function getFormData() {
+                  var creator = Number('{{ context.telegram_id }}');
+                  var task = document.querySelector('textarea[name="text"]').value;
+                  var remind_type = document.querySelector('select[name="type"]').value;
+                  var date = document.getElementById('selectedDate').value;
+                  var time = document.getElementById('selectedTime').value;
+                  console.log(remind_type);
+
+                  // Преобразуем дату и время в UNIX-время
+                  var dateParts = date.split('.');
+                  var timeParts = time.split(':');
+                  var nearest_trigger = new Date(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]).getTime() / 1000;
+
+                  // Создаём объект для отправки на сервер
+                  return {
+                        creator: creator,
+                        task: task,
+                        remind_type: remind_type,
+                        nearest_trigger: nearest_trigger
+                  };
+            }
+
+            function createCalendar(year, month) {
+                  var calendar = document.getElementById("calendar");
+                  calendar.innerHTML = ""; // Очищаем календарь перед созданием нового
+
+                  var selectDiv = document.createElement("div");
+                  var selectYear = createSelect("year", 2024, 2034, year, "changeYear");
+                  var selectMonth = createSelect("month", 1, 12, month, "changeMonth");
+                  var selectTime = document.createElement("div");
+                  selectTime.innerHTML = `
+                        <input type="time" id="selectedTime" onchange="selectTime()" style="padding: 8px;">
+                        <textarea name="time" id="selectedTimeTextarea" style="display: none;"></textarea>
+                  `;
+                  selectDiv.style.display = "flex";
+                  selectDiv.style.justifyContent = "center";
+                  selectDiv.style.alignItems = "center";
+
+                  selectDiv.appendChild(selectYear);
+                  selectDiv.appendChild(selectMonth);
+                  selectDiv.appendChild(selectTime);
+
+                  calendar.appendChild(selectDiv);
+
+                  // Массив с названиями дней недели
+                  var weekdays = ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'];
+
+                  var table = document.createElement("table");
+                  var daysInMonth = new Date(year, month, 0).getDate();
+                  var dayOfWeek = new Date(year, month - 1, 1).getDay();
+
+                  var day = 1;
+
+                  // Создание заголовков для дней недели
+                  var headerRow = table.insertRow();
+                  for (var i = 0; i < 7; i++) {
+                        var headerCell = headerRow.insertCell();
+                        headerCell.textContent = weekdays[i];
+                  }
+
+                  for (var i = 0; i < 6; i++) {
+                        var row = table.insertRow();
+
+                        for (var j = 0; j < 7; j++) {
+                              var cell = row.insertCell();
+
+                              if (i === 0 && j < dayOfWeek) {
+                                    // Пустые ячейки до начала месяца
+                                    continue;
+                              }
+
+                              if (day > daysInMonth) {
+                                    // Заканчиваем создание таблицы, если дни месяца кончились
+                                    break;
+                              }
+
+                              cell.textContent = day;
+                              cell.setAttribute("onclick", `selectDate(${year}, ${month}, ${day}, this)`);
+                              cell.setAttribute("data-date", `${day}.${month}.${year}`);
+
+                              day++;
+                        }
+                  }
+
+                  calendar.appendChild(table);
+            }
+
+            function createSelect(id, start, end, selected, onchangeFunction) {
+                  var select = document.createElement("select");
+                  select.id = id;
+                  select.onchange = window[onchangeFunction];
+
+                  for (var i = start; i <= end; i++) {
+                        var option = document.createElement("option");
+                        option.value = i;
+                        if (i < 12){
+                              option.text = getMonthName(i);
+                        }else{
+                              option.text = i;
+                        }
+
+                        if (i === selected) {
+                              option.selected = true;
+                        }
+                        select.appendChild(option);
+                  }
+
+                  return select;
+            }
+
+            function getMonthName(month) {
+                  var monthNames = [
+                        "Январь", "Февраль", "Март",
+                        "Апрель", "Май", "Июнь",
+                        "Июль", "Август", "Сентябрь",
+                        "Октябрь", "Ноябрь", "Декабрь"
+                  ];
+                  return monthNames[month - 1];
+            }
+
+            function changeYear() {
+                  var selectedYear = document.getElementById("year").value;
+                  var selectedMonth = document.getElementById("month").value;
+                  createCalendar(parseInt(selectedYear), parseInt(selectedMonth));
+            }
+
+            function changeMonth() {
+                  var selectedYear = document.getElementById("year").value;
+                  var selectedMonth = document.getElementById("month").value;
+                  createCalendar(parseInt(selectedYear), parseInt(selectedMonth));
+            }
+
+            function selectDate(year, month, day, cell) {
+                  var selectedDateTextarea = document.getElementById("selectedDate");
+                  var selectedDate = `${day}.${month}.${year}`;
+                  selectedDateTextarea.value = selectedDate;
+
+                  // Отобразить выбранную дату
+                  document.getElementById("selectedDate").value = selectedDate;
+
+                  // Выделяем ячейку
+                  var selectedCells = document.querySelectorAll(".selected-cell");
+                  for (var i = 0; i < selectedCells.length; i++) {
+                        selectedCells[i].classList.remove("selected-cell");
+                  }
+                  cell.classList.add("selected-cell");
+            }
+
+            // Инициализация при загрузке страницы
+            var currentYear = new Date().getFullYear();
+            var currentMonth = new Date().getMonth() + 1; // Месяцы в JavaScript начинаются с 0
+
+            createCalendar(currentYear, currentMonth);
+
+            function selectTime() {
+                  var selectedTimeTextarea = document.getElementById("selectedTimeTextarea");
+                  var selected_time = document.getElementById("selectedTime").value;
+                  selectedTimeTextarea.value = selected_time;
+
+                  // Отобразить выбранное время
+                  document.getElementById("selectedTime").value = selected_time;
+            }
+
+            function CheckValidData(date, time, text){
+                  // Сброс всех стилей до исходных значений
+                  $('#calendar').css('border', 'none');
+                  $('#selectedTime').css('border', 'none');
+                  $('#text').css('border', '1px solid black');
+                  $('.submit-btn').text('Создать напоминание').css('background-color', '#4e4e4e').removeClass('shake');
+
+                  if (date === '') {
+                        // Подсветка календаря красным
+                        $('#calendar').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте дату"
+                        $('.submit-btn').text('Добавьте дату').css('background-color', '#ff4343');
+                        // Задрожать кнопку
+                        shake()
+                        return 0;
+                  }
+
+                  if (time === '') {
+                        // Подсветка поля времени красным
+                        $('#selectedTime').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте время"
+                        $('.submit-btn').text('Добавьте время').css('background-color', '#ff4343');
+                        // Задрожать кнопку
+                        shake()
+                        return 0;
+                  }
+
+                  if (text === '') {
+                        // Подсветка поля ввода текста красным
+                        $('#text').css('border', '2px solid red');
+                        // Изменение текста и цвета кнопки на "Добавьте текст"
+                        $('.submit-btn').text('Добавьте текст').css('background-color', '#ff4343');
+                        return 0;
+                  }
+
+                  else{
+                        return 1
+                  }
+            }
+
+            function SubmitRemindRequest(url){
+                  let date = $('#selectedDate').val()
+                  let time = $('#selectedTime').val()
+                  let text = $('#text').val()
+
+                  // проверка данных
+                  if (CheckValidData(date, time, text)){
+                        // Преобразуем дату и время в UNIX-время
+                        var dateParts = date.split('.');
+                        var timeParts = time.split(':');
+                        var nearest_trigger = Date.UTC(dateParts[2], dateParts[1] - 1, dateParts[0], timeParts[0], timeParts[1]) / 1000;
+
+                        data = {
+                              task: text,
+                              remind_type: $('#remind-type').val(),
+                              nearest_trigger: nearest_trigger,
+                              creator: Number('{{ context.telegram_id }}'),
+                        }
+
+                        $.ajax({
+                              type: "POST",
+                              url: url,
+                              data: JSON.stringify(data),
+                              contentType: "application/json",
+                              success: function(response) {
+                                    openModal()
+                              }
+                        });
+                  }
+            }
+
+      </script>
+</html>

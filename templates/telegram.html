@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <title>Document</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .custom-table {
+            background-color: rgb(244 244 244);
+            border-radius: 15px;
+            padding: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="custom-table">
+                    <a href="{{ telegram_bot_url }}" target="_blank" class="btn btn-primary btn-lg btn-block mb-3">Перейти к Телеграм-боту</a>
+                    <form action="/process" method="post">
+                        <input type="hidden" name="code" value="{{ generated_code }}">
+                        <button type="submit" class="btn btn-success btn-lg btn-block">Дальше</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

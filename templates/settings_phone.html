@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div id="messageBox" style="display: none; position: fixed; bottom: 20px; right: 20px; background-color: lightgreen; color: black; padding: 10px; border-radius: 5px;">Часовой пояс успешно изменен</div>
+
+<style>
+
+      .main{
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            margin: 30px 0px;
+      }
+
+      button{
+            background: #4d4d4d;
+            border-radius: 9px;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+      }
+
+      .success-message {
+            background: rgb(0, 206, 0);
+            padding: 10px;
+            width: max-content;
+            color: white;
+            border-radius: 7px;
+      }
+
+      .flex-100{
+            width: 80%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+      }
+
+</style>
+
+<div class="main" style="width: 100%;">
+      <div id="timezoneDisplay" class="flex-100" style="display: flex;align-items: center;flex-wrap: wrap;">
+            <p class="flex-100" style="margin: 0;">Часовой пояс: {{ context.user_info.timezone }}</p>
+            <button class="flex-100" onclick="editTimezone()" style="margin-top: 10px;width: 100%;">Изменить</button>
+      </div>
+
+      <div id="timezoneForm" style="display: none;justify-content: center;flex-wrap: wrap;">
+            <label for="timezone">Выберите часовой пояс:</label>
+            <select id="timezone" name="timezone" style="font-size: 14px;width: 79%;">
+                  <option name="timezonetype" value="-12:00">UTC-12:00 - Линия перемены даты (IDLW)</option>
+                  <option name="timezonetype" value="-11:00">UTC-11:00 - Ном (Новая Зеландия)</option>
+                  <option name="timezonetype" value="-10:00">UTC-10:00 - Гавайи</option>
+                  <option name="timezonetype" value="-09:00">UTC-09:00 - Аляска (США)</option>
+                  <option name="timezonetype" value="-08:00">UTC-08:00 - Тихоокеанское время (США и Канада)</option>
+                  <option name="timezonetype" value="-07:00">UTC-07:00 - Ла-Пас</option>
+                  <option name="timezonetype" value="-06:00">UTC-06:00 - Мехико</option>
+                  <option name="timezonetype" value="-05:00">UTC-05:00 - Лима</option>
+                  <option name="timezonetype" value="-04:00">UTC-04:00 - Каракас</option>
+                  <option name="timezonetype" value="-03:00">UTC-03:00 - Буэнос-Айрес</option>
+                  <option name="timezonetype" value="-02:00">UTC-02:00 - Среднеатлантическое время</option>
+                  <option name="timezonetype" value="-01:00">UTC-01:00 - Азорские острова</option>
+                  <option name="timezonetype" value="00:00">UTC±00:00 - Лондон</option>
+                  <option name="timezonetype" value="+01:00">UTC+01:00 - Париж</option>
+                  <option name="timezonetype" value="+02:00">UTC+02:00 - Афины</option>
+                  <option name="timezonetype" value="+03:00">UTC+03:00 - Москва</option>
+                  <option name="timezonetype" value="+04:00">UTC+04:00 - Абу-Даби</option>
+                  <option name="timezonetype" value="+05:00">UTC+05:00 - Тюмень</option>
+                  <option name="timezonetype" value="+06:00">UTC+06:00 - Алматы</option>
+                  <option name="timezonetype" value="+07:00">UTC+07:00 - Бангкок</option>
+                  <option name="timezonetype" value="+08:00">UTC+08:00 - Пекин</option>
+                  <option name="timezonetype" value="+09:00">UTC+09:00 - Токио</option>
+                  <option name="timezonetype" value="+10:00">UTC+10:00 - Сидней</option>
+                  <option name="timezonetype" value="+11:00">UTC+11:00 - Владивосток</option>
+                  <option name="timezonetype" value="+12:00">UTC+12:00 - Камчатское время</option>
+                  <option name="timezonetype" value="+13:00">UTC+13:00 - Острова Феникс</option>
+                  <option name="timezonetype" value="+14:00">UTC+14:00 - Кирибати</option>
+            </select>
+            <button class="button" style="width: max-content;height: max-content;width: 80%;margin-top: 10px;" onclick="saveTimezone()">Сохранить</button>
+      </div>
+
+      <a class="button flex-100" style="height: max-content;padding: 10px;position: relative;top: 1px;margin-top: 10px;" href="/logout">Выйти</a>
+
+</div>
+<script>
+
+      function editTimezone() {
+            document.getElementById('timezoneDisplay').style.display = 'none';
+            document.getElementById('timezoneForm').style.display = 'flex';
+      }
+
+      function saveTimezone(){
+            var timezone = $('#timezone').val();
+            $.ajax({
+                  type: "POST",
+                  url: "/settings",
+                  data: JSON.stringify({ timezone: timezone }),
+                  contentType: "application/json",
+                  success: function(response) {
+                        console.log('Часовой пояс успешно обновлен');
+
+                        document.getElementById('timezoneDisplay').style.display = 'flex';
+                        document.getElementById('timezoneDisplay').innerHTML = '<p style="margin: 0;">Часовой пояс: ' + timezone + '</p><button onclick="editTimezone()" style="margin-left: 35px;">Изменить</button>';
+                        document.getElementById('timezoneForm').style.display = 'none';
+                  }
+            });
+      }
+
+</script>
+{% endblock %}
