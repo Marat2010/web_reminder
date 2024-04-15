@@ -26,7 +26,7 @@ logging.basicConfig(level=logging.INFO)
 
 #dp = Dispatcher()
 # Получение токена бота
-TOKEN = '5989885468:AAEdyvkaRnmtZlT92_Ec4KcYB0Xjj5S7BNk' #test @BetaHair_Bot
+TOKEN = '5989xxx:xxx----xx7BNk' #test @BetaHair_Bot
 #TOKEN = getenv("BOT_TOKEN")
 
 # Webserver settings
