@@ -125,10 +125,12 @@ def remove_reminder_by_ruid(ruid, database):
     except sqlite3.Error as e:
         print(e)
 
+
 if __name__ == "__main__":
     last_move_time = datetime.now() - timedelta(minutes=14)  # Установка начального значения для отслеживания времени
     database_path = "db/reminds.db"
-    token = '1774003261:AAEtsJ-XHenBzJgg80UfYgeB8ukzVXEy7h0'
+    # token = '1774003261:AAEtsJ-XHenBzJgg80UfYgeB8ukzVXEy7h0'
+    token = '1774___:AAEtsJxxxxxxxxxx7h0'
 
     print('repeater has been activated')
 
