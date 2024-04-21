@@ -18,6 +18,10 @@
 ```
 wget https://raw.githubusercontent.com/Marat2010/web_reminder/master/Scripts/1_start_docker.sh
 ```
+```
+chmod +x 1_start_docker.sh
+./1_start_docker.sh
+```
 - Продолжение следует ...
 
 
